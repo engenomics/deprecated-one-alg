@@ -1,3 +1,3 @@
 # one-alg
 
-Various algorithms for boolean arrays.
+The algorithm for ones!
