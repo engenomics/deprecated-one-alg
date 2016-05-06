@@ -122,6 +122,9 @@ public final class Rule implements Comparable<Rule> {
     @Override
     public int compareTo(@NotNull Rule o) {
         // Sorts by elements covered, in a descending fashion
-        return o.getCovered() - this.getCovered();
+        if (o.getCovered() != this.getCovered()) {
+            return o.getCovered() - this.getCovered();
+        }
+        return this.getStart() - o.getStart();
     }
 }

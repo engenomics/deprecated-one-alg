@@ -93,6 +93,8 @@ public class Utils {
 
         List<Rule> optimalRuleSet = Utils.getOptimalRuleset(possibleRuleResults);
 
+        Collections.sort(optimalRuleSet);
+
         return optimalRuleSet;
     }
 
@@ -140,12 +142,21 @@ public class Utils {
         return new Rule(onesPositions.get(0), onesPositions.get(onesPositions.size() - 1), step);
     }
 
+
+    // Used for getRules memoization
+    private static Map<Set<Integer>, Rule> onesPositionsSetRules = new HashMap<>();
+
     public static List<Rule> getRules(int[] list) {
         List<Rule> rules = new LinkedList<>();
 
         Set<Integer> listSet = new HashSet<>(getPositionsOfOnes(list));
 
         for (Set<Integer> onesPositionsSet : Sets.powerSet(listSet)) {
+            if (onesPositionsSetRules.containsKey(onesPositionsSet)) {
+                rules.add(onesPositionsSetRules.get(onesPositionsSet));
+                continue;
+            }
+
             if (onesPositionsSet.size() == 0) {
                 continue;
             }
@@ -156,7 +167,9 @@ public class Utils {
             int[] listUsingCurrentOnesPositions = getListFromOnesPosition(onesPositions, list.length);
 
             if (isDescribableByOneRule(listUsingCurrentOnesPositions)) {
-                rules.add(listToRule(listUsingCurrentOnesPositions));
+                Rule ruleThatDescribesIt = listToRule(listUsingCurrentOnesPositions);
+                rules.add(ruleThatDescribesIt);
+                onesPositionsSetRules.put(onesPositionsSet, ruleThatDescribesIt);
             }
         }
 
